@@ -21,4 +21,27 @@ exports.getPost = (req,res) => {
         }
         return res.json(post);
     })
+};
+
+exports.createPost = (req,res) => {
+    const Post = new Posts();
+    const { title,desc,author,likes,comments,category,url } = req.body;
+
+    Post.title = title;
+    Post.desc = desc;
+    Post.likes = likes;
+    Post.author = author;
+    Post.comments = comments;
+    Post.category = category;
+    Post.url = url;
+
+    Post.save((err,post) => {
+        if(err){
+            return res.status(400).json({
+                status: "failed",
+                message: "failed to create a post",
+            })
+        }
+        return res.json(post);
+    })
 }
