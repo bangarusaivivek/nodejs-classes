@@ -8,7 +8,7 @@ const PostSchema = new Schema({
     category: String,
     likes: Number,
     date: Date,
-    comments: [Object],
+    comments: [bject],
 })
 
 module.exports = model("posts",PostSchema);
