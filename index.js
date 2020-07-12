@@ -1,81 +1,46 @@
-const http = require('http');
-const fs = require('fs');
+const express = require('express');
+const path = require('path');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const v1Routes = require('./routes/v1.js');
+const app = express();
+const PORT = 3000;
 
-const reqListener = (req,res)=>{
-    const {url,method} = req;
-    res.setHeader('Content-Type','text/html')
-    
-    if (url === '/' ){
-        res.write(`
-            <html>
-                <head><title>Learn Nodejs</title>
-                    <link rel="icon" href="data:," />
-                </head>
-                <body>
-                    <h1>I am Main page</h1>
-                    <form action="/message" method="POST">
-                        <input type="text" placeholder="Add your message" name="message" />
-                    </form>
-                </body>
-            </html>
-        `)
-        return res.end();
-    }
+mongoose.connect("mongodb://localhost:27017/blogs",{
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+});
 
-    if (url === '/message' && method === 'POST'){
-        const body = [];
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}))
 
-        req.on('data',(chunk)=>{
-            // console.log(chunk)
-            body.push(chunk);
-        })
-        
-        // console.log(body)
-        console.log(url)
-        return req.on('end',()=>{
-            // console.log('inside')
-            const parsedBody = Buffer.concat(body).toString();
-            // console.log(parsedBody)
-            const message = parsedBody.split("=")[1];
+app.set('view engine','pug');
+app.set('views','views');
 
-            fs.writeFile('message.txt',message,(err)=>{
-                if(err){
-                    res.send(err);
-                }
+app.use(express.static(path.join(__dirname, 'public')));
+app.get('/',(req,res)=>{
+    res.send("Hello Main Page")
+})
+app.use('/api/v1',v1Routes);
 
-                res.statusCode = 302;
-                // setTimeout(()=>{
-                //     res.setHeader("Location","/")
-                //     return res.end();
-                // },1000)
-                res.setHeader("Location","/")
-                console.log(url)
-                return res.end(); 
-            })
-            
-            // res.write(`
-            //     <html>
-            //         <head><title>Learn Nodejs</title></head>
-            //         <body>
-            //             <h1>Message Received</h1>
-            //         </body>
-            //     </html>
-            // `)
-            // console.log("hello")
-            // return res.end();
-        });
-        
-    }
 
-    res.write(`
-        <html>
-            <head><title>Learn Nodejs</title></head>
-            <body>
-                <h1>404: Not Found</h1>
-            </body>
-        </html>
-    `)
-    res.end();
-}
-const server = http.createServer(reqListener);
-server.listen(3000);
+
+app.get('*',(__,res)=>{
+    res.sendFile(path.join(__dirname,'./views/404.html'))
+    // res.render('404',{pageTitle: "page not found"})
+})
+
+
+
+// app.use((req,res,next)=>{
+//     console.log(req.url)
+//     next();
+// })
+// app.use((req,res,next)=>{
+//     res.send('Hello');
+//     next();
+// })
+
+
+app.listen(PORT);
