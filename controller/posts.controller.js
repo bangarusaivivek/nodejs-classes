@@ -47,6 +47,7 @@ exports.createPost = (req,res) => {
 }
 
 exports.updatePost = (req,res) => {
+    const { title} = req.body;
     Posts.updateOne({ _id: req.params.id },{
         $set: {
             ...req.body,
@@ -61,5 +62,10 @@ exports.updatePost = (req,res) => {
         }
         return res.json(post);
     })
+
+    // Posts.findByIdAndUpdate({ _id: req.params.id },{ title })
+    // .exec((err,post) => {
+        
+    // })
 }
 
