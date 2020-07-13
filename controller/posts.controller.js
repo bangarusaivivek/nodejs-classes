@@ -45,3 +45,21 @@ exports.createPost = (req,res) => {
         return res.json(post);
     })
 }
+
+exports.updatePost = (req,res) => {
+    Posts.updateOne({ _id: req.params.id },{
+        $set: {
+            ...req.body,
+        }
+    })
+    .exec((err,post) => {
+        if(err){
+            return res.status(400).json({
+                status: "failed",
+                message: "failed to update a post",
+            })
+        }
+        return res.json(post);
+    })
+}
+
