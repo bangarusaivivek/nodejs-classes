@@ -122,3 +122,22 @@ exports.getUniqueUrls = (req,res) => {
         return res.json(result); 
     })
 };
+
+exports.deletePost = (req,res) => {
+    const { id } = req.params;
+    Posts.findByIdAndDelete({ _id: id })
+    .exec((err,post) => {
+        if(err){
+            return res.status(400).json({
+                status: "failed",
+                message: "failed to delete a post",
+            })
+        }
+        return res.json(post);
+    })
+
+    // Posts.findByIdAndUpdate({ _id: req.params.id },{ title })
+    // .exec((err,post) => {
+        
+    // })
+}
