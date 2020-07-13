@@ -69,3 +69,28 @@ exports.updatePost = (req,res) => {
     // })
 }
 
+exports.getPostsCount = (req,res) => {
+    Posts.aggregate([ { $group: { _id: "$author", num_of_posts: { $sum: 1} } } ])
+    .exec((err,result)=>{
+        if(err){
+            return res.status(400).json({
+                status: "failed",
+                message: "Aggregation of posts Failed",
+            })
+        }
+        return res.json(result); 
+    })
+};
+
+exports.getLikesCount = (req,res) => {
+    Posts.aggregate([ { $group: { _id: "$author", total_likes: { $sum: "$likes"} } } ])
+    .exec((err,result)=>{
+        if(err){
+            return res.status(400).json({
+                status: "failed",
+                message: "Aggregation of likes Failed",
+            })
+        }
+        return res.json(result); 
+    })
+};
