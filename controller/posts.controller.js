@@ -70,7 +70,9 @@ exports.updatePost = (req,res) => {
 }
 
 exports.getPostsCount = (req,res) => {
-    Posts.aggregate([ { $group: { _id: "$author", num_of_posts: { $sum: 1} } } ])
+    Posts.aggregate([ 
+        { $match: { author: "Kathie" } },
+        { $group: { _id: "$author", num_of_posts: { $sum: 1} } } ])
     .exec((err,result)=>{
         if(err){
             return res.status(400).json({
