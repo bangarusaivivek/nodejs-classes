@@ -94,3 +94,29 @@ exports.getLikesCount = (req,res) => {
         return res.json(result); 
     })
 };
+
+exports.getUrls = (req,res) => {
+    Posts.aggregate([ { $group: { _id: "$author", urls: { $push: "$url"} } } ])
+    .exec((err,result)=>{
+        if(err){
+            return res.status(400).json({
+                status: "failed",
+                message: "Aggregation of pushing urls Failed",
+            })
+        }
+        return res.json(result); 
+    })
+};
+
+exports.getUniqueUrls = (req,res) => {
+    Posts.aggregate([ { $group: { _id: "$author", urls: { $addToSet: "$url"} } } ])
+    .exec((err,result)=>{
+        if(err){
+            return res.status(400).json({
+                status: "failed",
+                message: "Aggregation of pushing urls Failed",
+            })
+        }
+        return res.json(result); 
+    })
+};
