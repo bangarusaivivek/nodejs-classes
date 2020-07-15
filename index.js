@@ -10,6 +10,7 @@ mongoose.connect("mongodb://localhost:27017/blogs",{
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
+    useCreateIndex: true,
 });
 
 app.use(bodyParser.json());
@@ -22,6 +23,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/',(req,res)=>{
     res.send("Hello Main Page")
 })
+
 app.use('/api/v1',v1Routes);
 
 
